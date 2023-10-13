@@ -9,6 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: docker login -u ammartinezdomingo -p Amdamd01!
+      - run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PWD }}
       - run: docker build -t ammartinezdomingo/docker-react -f Dockerfile.dev .
       - run: docker run -e CI=true ammartinezdomingo/docker-react npm test
