@@ -12,3 +12,16 @@ jobs:
       - run: docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PWD }}
       - run: docker build -t ammartinezdomingo/docker-react -f Dockerfile.dev .
       - run: docker run -e CI=true ammartinezdomingo/docker-react npm test
+
+      - name: Deploy to EB
+      - run: zip -r deploy.zip . -x '*.git*'
+      - uses: ammartinezdomingo/docker-react@v18
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_KEY }}
+          application_name: docker-react-environment
+          environment_name: Docker-react-environment-env
+          existing_bucket_name: elasticbeanstalk-us-east-1-619550900410
+          region: us-east-1
+          version_label: ${{ github.sha }}
+          deployment_package: deploy.zip
